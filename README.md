@@ -1,6 +1,6 @@
 # euler
 
-A Clojure library designed to ... well, that part is up to you.
+A collection of solutions to problems from Project Euler:  http://projecteuler.net/problems
 
 ## Usage
 
