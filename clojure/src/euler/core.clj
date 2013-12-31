@@ -22,19 +22,18 @@
 
 ;; Problem 3 - find largest prime factor of 600851475143
 
-;; Prime number seq from clojure docs: http://clojuredocs.org/clojure_core/clojure.core/lazy-seq#example_1000
+;; Prime number seq from clojure docs:
+;; http://clojuredocs.org/clojure_core/clojure.core/lazy-seq#example_1000
 (defn sieve [s]
   (cons (first s)
         (lazy-seq (sieve (filter #(not= 0 (mod % (first s)))
                                  (rest s))))))
 
-(take 20 (sieve (iterate inc 2)))
-
 (loop [number 600851475143
-       factors '()
+       factors '() ;; no need for a list but I wanted to see all the factors
        primes (sieve (iterate inc 2))]
   (if (= 1 number)
-    factors  ;; could take first here but I wanted to see all the factors
+    factors
     (let [f (first primes)
           result (/ number f)
           remain (mod number f)]
@@ -47,10 +46,27 @@
 ;; Problem 4 - largest palindrome made from the product of two 3-digit numbers
 
 ;; This was the solution on "Test-Driving Clojure in Light Table", if I remember right
-(apply max (for [x (range 100 1000)
-                 y (range 100 1000)
-                 :let [s (str (* x y))]
-                 :when (= s (clojure.string/reverse s))]
-             (* x y)))
+(->>
+ (for [x (range 100 1000)
+       y (range 100 1000)
+       :let [s (str (* x y))]
+       :when (= s (clojure.string/reverse s))]
+   (* x y))
+ (apply max))
 
+
+;; Problem 5 - Smallest number that can be evenly divided by all numbers from 1 - 20
+
+(for [denom (range 1 11)
+      num (iterate inc 10)
+      :let [remain (map #(mod num %) denom)
+            all-divis? (reduce #(and %1 (not= 0 %2)) true remain)]
+      :when all-divis?
+      :while (not all-divis?)]
+  num)
+
+(range 1 11)
+
+(def remain  (map #(mod 2520 %) (range 1 11)))
+(reduce #(and %1 (not= 0 %2)) true remain)
 
