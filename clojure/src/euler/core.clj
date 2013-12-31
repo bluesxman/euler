@@ -62,4 +62,42 @@
       (recur (rest num-seq)))))
 
 (map #(mod 232792560 %) (range 1 21))
+
+
+;; Problem 6 - difference between the square of the sums and sum of the squares of the
+;; first 100 natural numbers
+(defn sum-of-square
+  [x y]
+  (reduce #(+ (* %2 %2) %1) (range x (inc y))))
+
+(sum-of-square 1 10)
+
+(defn square-of-sum
+  [x y]
+  (let [s (reduce + (range x (inc y)))]
+    (* s s)))
+
+(square-of-sum 1 10)
+
+
+(- (square-of-sum 1 100) (sum-of-square 1 100))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
