@@ -153,4 +153,18 @@
              (= (+ (* a a) (* b b)) (* c c))
              (= 1000 (+ a b c)))]
   (* a b c))
-
+
+
+;; Problem 10 - Sum all primes below 2 million
+(defn sum-primes
+  [max-prime]
+  (loop [primes []
+         i 2
+         sum 0]
+    (if (> i max-prime)
+      sum
+      (if (prime? i primes)
+        (recur (conj primes i) (inc i) (+ sum i))
+        (recur primes (inc i) sum)))))
+
+(sum-primes 2e6)
