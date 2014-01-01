@@ -220,9 +220,9 @@
   (let [max-row (count grid)
         max-col (count (grid 0))
         directions [left-indexer down-indexer rdiag-indexer ldiag-indexer]]
-    (for [row (range 0 max-row)
-          col (range 0 max-col)
-          dir (range 4)
+    (for [row (range max-row)
+          col (range max-col)
+          dir (range (count directions))
           :when (case dir
                   0 (<= col (- max-col n))  ;; left
                   1 (<= row (- max-row n))  ;; down
@@ -231,4 +231,6 @@
       (apply * (grid-vals grid row col n (directions dir))))))
 
 (apply max (max-directional grid-20 4))
+
+
 
