@@ -190,11 +190,12 @@
       (inc-sieve (rest num-seq) (update-composites table n))
       (cons n (lazy-seq (inc-sieve (rest num-seq) (assoc table (* n n) (list n))))))))
 
-(def prime-seq
-  "Infinite sequence of primes using incremental functional sieve."
+(defn prime-seq
+  "Creates infinite sequence of primes using incremental functional sieve."
+  []
   (cons 2 (inc-sieve (iterate #(+ 2 %) 3) {})))
 
-(time (apply + (take-while #(< % 2e6) prime-seq)))
+(time (apply + (take-while #(< % 2e6) (prime-seq))))
 
 
 ;; Problem 11 - Largest product of 4 in same direction
@@ -261,6 +262,32 @@
 (apply max (max-directional grid-20 4))
 
 
+;; Problem 12 - First triangle number to have over 500 divisors
+;; needs problem 10 for primes
+(defn triangle-numbers []
+  (->>
+   (iterate (fn [[n sum]] [(inc n) (+ n sum)]) [1 0])
+   (drop 1)
+   (map #(% 1))))
 
+(defn factors [n]
+  (loop [facts []
+         primes (prime-seq)
+         remain n]
+   (if (= remain 1)
+     facts
+     (let [p (first primes)
+           r (mod remain p)]
+       (if (zero? r)
+         (recur (conj facts p) primes (/ remain p))
+         (recur facts (rest primes) remain))))))
 
-
+;; using algorithm from:  http://www.wikihow.com/Determine-the-Number-of-Divisors-of-an-Integer
+(defn count-divisors [n]
+  (->>
+   (partition-by identity (factors n))
+   (map count)
+   (map inc)
+   (apply *)))
+
+(first (drop-while #(< (count-divisors %) 500) (triangle-numbers)))
