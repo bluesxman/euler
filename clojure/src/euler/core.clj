@@ -264,11 +264,7 @@
 
 ;; Problem 12 - First triangle number to have over 500 divisors
 ;; needs problem 10 for primes
-(defn triangle-numbers []
-  (->>
-   (iterate (fn [[n sum]] [(inc n) (+ n sum)]) [1 0])
-   (drop 1)
-   (map #(% 1))))
+(defn triangle-numbers [] (reductions + (iterate inc 1)))
 
 (defn factors [n]
   (loop [facts []
@@ -290,4 +286,7 @@
    (map inc)
    (apply *)))
 
-(time (first (drop-while #(< (count-divisors %) 500) (triangle-numbers))))
+(time (first (drop-while #(< (count-divisors %) 500) (triangle-numbers))))
+
+
+;;
