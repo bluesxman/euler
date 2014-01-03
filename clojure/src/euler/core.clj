@@ -290,4 +290,4 @@
    (map inc)
    (apply *)))
 
-(first (drop-while #(< (count-divisors %) 500) (triangle-numbers)))
+(time (first (drop-while #(< (count-divisors %) 500) (triangle-numbers))))
