@@ -395,4 +395,36 @@
 
 (def nums-100 (map #(read-string %) (re-seq #"\w+" string-nums-100)))
 
-(subs (str (apply + nums-100)) 0 10)
+(subs (str (apply + nums-100)) 0 10)
+
+
+;; Problem 14 - Longest collatz sequence
+(defn next-collatz [n]
+  (if (even? n)
+    (/ n 2)
+    (+ (* 3 n ) 1)))
+
+(defn update-cache
+  [n cache]
+  (cond
+   (contains? cache n) cache
+   (= n 1 ) {1 1}
+   :else (let [nxt (next-collatz n)
+               nxt-cache (update-cache nxt cache)]
+           (assoc nxt-cache n (inc (nxt-cache nxt))))))
+
+(defn longest-collatz
+  [upper-exclusive]
+  (loop [nums (range 1 upper-exclusive)
+         [max-n max-cnt] [0 0]
+         cache {}]
+    (if-let [n (first nums)]
+      (let [next-cache (if (contains? cache n) cache (update-cache n cache))
+            n-cnt (next-cache n)
+            next-max (if (> n-cnt max-cnt) [n n-cnt] [max-n max-cnt])]
+        (recur (rest nums) next-max next-cache))
+      max-n)))
+
+(time (longest-collatz 1e6))
+
+
