@@ -404,13 +404,13 @@
     (/ n 2)
     (+ (* 3 n ) 1)))
 
-(defn update-cache
+(defn cache-collatz
   [n cache]
   (cond
    (contains? cache n) cache
    (= n 1 ) {1 1}
    :else (let [nxt (next-collatz n)
-               nxt-cache (update-cache nxt cache)]
+               nxt-cache (cache-collatz nxt cache)]
            (assoc nxt-cache n (inc (nxt-cache nxt))))))
 
 (defn longest-collatz
@@ -419,12 +419,38 @@
          [max-n max-cnt] [0 0]
          cache {}]
     (if-let [n (first nums)]
-      (let [next-cache (if (contains? cache n) cache (update-cache n cache))
+      (let [next-cache (cache-collatz n cache)
             n-cnt (next-cache n)
             next-max (if (> n-cnt max-cnt) [n n-cnt] [max-n max-cnt])]
         (recur (rest nums) next-max next-cache))
       max-n)))
 
-(time (longest-collatz 1e6))
+ (time (longest-collatz 1e6))
+
+
+;; Problem 15 - Count possible paths from 0,0 to 20,20 in a grid
+
+;; seed cache with: {[0 0] 1}
+(defn cache-path
+  [coord cache]
+  (if-let [path-count (cache coord)]
+    [path-count cache]
+    (let [[x y] coord
+          [left lcache] (if (zero? x) [0 cache] (cache-path [(dec x) y] cache))
+          [up ucache] (if (zero? y) [0 cache] (cache-path [x (dec y)] lcache)) ;; use lcache to merge
+          cnt (+ left up)]
+      [cnt (assoc ucache coord cnt)])))
+
+(defn count-lattice-paths
+  [size]
+  (let [[cnt cache] (cache-path [size size] {[0 0] 1})]
+    cnt))
+
+(count-lattice-paths 20)
+
+
+
+
+
 
 
