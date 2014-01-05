@@ -449,6 +449,9 @@
 (count-lattice-paths 20)
 
 
+;; Problem 16 - sum of the digits of 2^1000
+
+(apply + (map read-string (re-seq #"\d" (str (apply *' (repeat 1000 2 ))))))
 
 
 
