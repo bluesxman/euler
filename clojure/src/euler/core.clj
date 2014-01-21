@@ -502,3 +502,62 @@
 
 
 
+;; Problem 18 - Max path sum
+
+(def pyramid-str
+  "75
+  95 64
+  17 47 82
+  18 35 87 10
+  20 04 82 47 65
+  19 01 23 75 03 34
+  88 02 77 73 07 63 67
+  99 65 04 28 06 16 70 92
+  41 41 26 56 83 40 80 70 33
+  41 48 72 33 47 32 37 16 94 29
+  53 71 44 65 25 43 91 52 97 51 14
+  70 11 33 28 77 73 17 78 39 68 17 57
+  91 71 52 38 17 14 91 43 58 50 27 29 48
+  63 66 04 68 89 53 67 30 73 16 69 87 40 31
+  04 62 98 27 23 09 70 98 73 93 38 53 60 04 23")
+
+(def pyramid-vecs
+  (vec
+   (for [str-list (map #(re-seq #"[1-9]\d*" %) (clojure.string/split-lines pyramid-str))]
+     (vec (map read-string str-list)))))
+
+(defn- sum-path
+  [row col pyramid cache]
+  (if (zero? row)
+    ((pyramid 0) 0)
+    (let [n ((pyramid row) col)
+          left (if (zero? col) 0 (cache [(dec row) (dec col)]))
+          right (if (= (dec (count (pyramid row))) col) 0 (cache [(dec row) col]))]
+      (+ n (max left right)))))
+
+(defn max-path
+  [pyramid]
+  (loop [row 0
+         col 0
+         cache {}
+         mx 0]
+    (if (= row (count pyramid))
+      mx
+      (let [sum (sum-path row col pyramid cache)
+            new-mx (max mx sum)
+            end? (= col (dec (count (pyramid row))))
+            nxt-row (if end? (inc row) row)
+            nxt-col (if end? 0 (inc col))]
+        (recur nxt-row nxt-col (assoc cache [row col] sum) new-mx)))))
+
+(max-path pyramid-vecs)
+
+;; Problem 67 - Max path #2
+(def big-pyr-str (slurp "http://projecteuler.net/project/triangle.txt"))
+
+(def big-pyr-vecs
+  (vec
+   (for [str-list (map #(re-seq #"[1-9]\d*" %) (clojure.string/split-lines big-pyr-str))]
+     (vec (map read-string str-list)))))
+
+(max-path big-pyr-vecs)
